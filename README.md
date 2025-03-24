@@ -8,6 +8,8 @@ Este guia detalha a configuração de uma infraestrutura AWS, a instalação de 
 ## 📌 1️⃣ Criar a VPC
 ### Via AWS Console:
 1. Acesse o AWS Management Console → VPC
+
+![Captura de tela 2025-03-24 104659](https://github.com/user-attachments/assets/20b88f57-432a-44ab-9908-df164b9cb2fe)
 2. Clique em **Create VPC**
  
 ![Captura de tela 2025-03-18 092506](https://github.com/user-attachments/assets/56f8d3eb-5f2d-4845-91b1-5386f7c0edb8)
