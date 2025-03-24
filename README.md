@@ -45,8 +45,11 @@ Este guia detalha a configuração de uma infraestrutura AWS, a instalação de 
    ![Captura de tela 2025-03-18 093535](https://github.com/user-attachments/assets/e6c01fc2-db01-4140-9fed-cc03552cfd9c)
 
 3. Torne as **sub-redes públicas** ativando **Auto-assign Public IPv4**
-   - Clique na sub-redes publicas
+   - Clique nas sub-redes publicas
    - Clique em **Actions**  → **Edit subnet settings**
+
+   ![Captura de tela 2025-03-18 093823](https://github.com/user-attachments/assets/362e4013-8c9a-46c5-8cd0-9d4077b8282e)
+
 
 ## 🌍 3️⃣ Configurar Internet Gateway e Tabela de Rotas
 1. **Internet Gateway**
