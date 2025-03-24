@@ -54,7 +54,17 @@ Este guia detalha a configuração de uma infraestrutura AWS, a instalação de 
 ## 🌍 3️⃣ Configurar Internet Gateway e Tabela de Rotas
 1. **Internet Gateway**
    - Vá para **Internet Gateways** → **Create Internet Gateway**
+   
+![Captura de tela 2025-03-18 094039](https://github.com/user-attachments/assets/7d020a5a-8795-466e-a488-07b9f016bae9)
+
    - Nomeie (ex: IGWNginxServer) → **Create** → **Attach to VPC**
+
+![Captura de tela 2025-03-18 094111](https://github.com/user-attachments/assets/bf9bbd02-91d4-404c-be18-0075347893a0)
+
+![Captura de tela 2025-03-24 081056](https://github.com/user-attachments/assets/52430ca5-3237-421a-9f38-10f50224a16f)
+
+![Captura de tela 2025-03-24 081132](https://github.com/user-attachments/assets/947312da-e370-42f6-9dcc-9135fccf45a7)
+
 2. **Tabela de Rotas**
    - Vá para **Route Tables** → **Create Route Table**
    - Associe à VPC e edite as **Routes**:
