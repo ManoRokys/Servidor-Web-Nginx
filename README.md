@@ -14,12 +14,16 @@ Este guia detalha a configuração de uma infraestrutura AWS, a instalação de 
 2. Clique em **Create VPC**
  
 ![Captura de tela 2025-03-18 092506](https://github.com/user-attachments/assets/56f8d3eb-5f2d-4845-91b1-5386f7c0edb8)
+
 3. Clique em VPC only
 4. Defina:
    - **Nome:** VPCNginxServer
    - **IPv4 CIDR:** 10.0.0.0/16 (Exemplo, pode ajustar)
    - **Tenancy:** Default
 5. Clique em **Create VPC**
+
+![documentacao2](https://github.com/user-attachments/assets/d7360663-1326-43ce-a2c3-698bf2ea6ffa)
+
 
 ## 🌐 2️⃣ Criar Sub-redes Públicas e Privadas
 1. No menu lateral, clique em **Subnets** → **Create Subnet**
