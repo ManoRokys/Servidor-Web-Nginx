@@ -112,10 +112,6 @@ http://IP_PUBLICO
 1. **Criar Webhook**:
    - Vá até **Configurações do Servidor** → **Integrações** → **Webhooks**
    - Clique em **Novo Webhook**, escolha um canal e copie a **URL**
-2. **Testar Webhook Manualmente**:
-```bash
-curl -X POST -H "Content-Type: application/json" -d '{"content": "🚀 Teste de Webhook!"}' "URL_DO_SEU_WEBHOOK"
-```
 
 ## 🛠️ 8️⃣ Criar Script de Monitoramento
 Crie e edite o script:
