@@ -140,8 +140,11 @@ Se estiver utilizando **WSL (Windows Subsystem for Linux)**, siga os passos para
    ```bash
    ssh -i ~/ChaveNginx.pem ubuntu@IP_PUBLICO
    ```
+   - Descobrir o IP da sua Maquina:
+    
+   ![Captura de tela 2025-03-24 083835](https://github.com/user-attachments/assets/0d09a8e0-7c88-4c42-8027-946915872eb5)
 
-   ![Captura de tela 2025-03-24 083956](https://github.com/user-attachments/assets/d872bd44-166b-4e7a-886b-91e44f1d0ba6)
+   ![Captura de tela 2025-03-24 083956](https://github.com/user-attachments/assets/75d1e6a8-9eed-47d9-9b0d-663811ff7ab7)
 
 Conexão efetuada com sucesso: 
 
