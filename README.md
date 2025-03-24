@@ -94,18 +94,33 @@ O Mapa final da sua VPC, deve estar assim ao final dessas etapas:
 1. **Criar Instância**
    - AWS Console → **EC2** → **Launch Instance**
    - Escolha uma AMI: Ubuntu 24.04(versão usada nos exemplos), Debian 11 ou Amazon Linux
+
+   ![Captura de tela 2025-03-18 095707](https://github.com/user-attachments/assets/3b3354d1-1ef4-4a72-8ee1-24d89ca35b39)
+
    - **Instance type:** t2.micro (grátis no Free Tier)
+   
+   ![Captura de tela 2025-03-18 095804](https://github.com/user-attachments/assets/a495ffd8-b454-47b8-a9c5-84d50b8a9678)
+
    - **Network settings:** Escolha a VPC e uma sub-rede pública
    - **Habilite IP Público**
+
+   ![Captura de tela 2025-03-24 082337](https://github.com/user-attachments/assets/bc28126a-a77c-466a-90a2-26c6e1e5ac67)
+
 2. **Create Security Group** com regras:
    - **SSH (22):** Seu IP ou 0.0.0.0/0 (inseguro para produção)
    - **HTTP (80):** 0.0.0.0/0
+
+   ![Captura de tela 2025-03-24 082354](https://github.com/user-attachments/assets/b85d1e13-7e45-49af-9858-e8f3336a269f)
+
 3. **Key pair (login)**
    - **Create new key pair**
    - Criar Chave SSH
    - Nome: ChaveNginx
    - Formato: .pem (For use with OpenSSH)  
    - Clique em Create Key Pair e faça o download do arquivo .pem (caso não tenha feito automaticamente)
+
+   ![Captura de tela 2025-03-18 095909](https://github.com/user-attachments/assets/6e0730ad-a213-4c60-ba6f-adcf6f3e42ba)
+
 4. **Launch instance**
 
 ## 🔑 5️⃣ Acesso via SSH e Configuração no WSL
