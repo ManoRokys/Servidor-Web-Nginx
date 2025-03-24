@@ -185,7 +185,19 @@ http://IP_PUBLICO
 ## 🔔 7️⃣ Configurar Webhook do Discord
 1. **Criar Webhook**:
    - Vá até **Configurações do Servidor** → **Integrações** → **Webhooks**
+  
+     ![Captura de tela 2025-03-19 104146](https://github.com/user-attachments/assets/075052a8-5aa8-47c7-b1af-db2f36bcb0f4)
+
+     ![Captura de tela 2025-03-19 104201](https://github.com/user-attachments/assets/ad3caac7-e99b-4bc1-be47-e8fd79563f21)
+
    - Clique em **Novo Webhook**, escolha um canal e copie a **URL**
+
+     ![Captura de tela 2025-03-19 104209](https://github.com/user-attachments/assets/5d9dfcf7-5a36-46ed-89fd-528d3eb09d36)
+
+     ![Captura de tela 2025-03-19 104220](https://github.com/user-attachments/assets/e55a43b1-a356-4fa3-bf61-8739ba70ac3e)
+
+     ![Captura de tela 2025-03-24 090223](https://github.com/user-attachments/assets/a1636934-c058-41e0-b98e-9fdb486c6572)
+
 
 ## 🛠️ 8️⃣ Criar Script de Monitoramento
 Crie e edite o script:
