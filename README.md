@@ -141,6 +141,12 @@ Se estiver utilizando **WSL (Windows Subsystem for Linux)**, siga os passos para
    ssh -i ~/ChaveNginx.pem ubuntu@IP_PUBLICO
    ```
 
+   ![Captura de tela 2025-03-24 083956](https://github.com/user-attachments/assets/d872bd44-166b-4e7a-886b-91e44f1d0ba6)
+
+Conexão efetuada com sucesso: 
+
+   ![Captura de tela 2025-03-24 084016](https://github.com/user-attachments/assets/e4e152a6-adf9-40a7-a792-2c4550f4df9f)
+
 ## ⚙️ 6️⃣ Instalar e Configurar Nginx
 ### Para Ubuntu/Debian:
 ```bash
