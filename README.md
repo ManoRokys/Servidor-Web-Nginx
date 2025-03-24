@@ -266,6 +266,9 @@ Se for a primeira vez, o sistema perguntará qual editor deseja usar (nano, vim,
    ```bash
    sudo systemctl start nginx
    ```
+   ![Captura de tela 2025-03-24 092047](https://github.com/user-attachments/assets/0fb6932d-b00e-42fc-abc0-7d14319c3176)
+   ![Captura de tela 2025-03-24 092056](https://github.com/user-attachments/assets/7a09527c-7d1c-4547-8042-6aa8215333ce)
+
 Se os alertas estiverem aparecendo corretamente no Discord, a configuração está completa! 🎉
 
 
