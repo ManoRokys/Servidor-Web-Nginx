@@ -73,12 +73,22 @@ Este guia detalha a configuração de uma infraestrutura AWS, a instalação de 
    - Associe à VPC e edite as **Routes**:
      
      ![Captura de tela 2025-03-18 094505](https://github.com/user-attachments/assets/7708ae9f-d383-4024-a9f0-bde303343641)
-     
+
+     ![Captura de tela 2025-03-24 081318](https://github.com/user-attachments/assets/bb8d8040-16e7-404f-b0bc-8fc32738531a)
+
      - Clique em **Add route**
      - **Destination:** 0.0.0.0/0
      - **Target:** Internet Gateway (IGWNginxServer)
      - **Save changes**
    - Associe as sub-redes públicas
+   
+     ![Captura de tela 2025-03-24 081603](https://github.com/user-attachments/assets/779b32e4-366a-4d1e-8107-f820d99b278a)
+     ![Captura de tela 2025-03-24 081617](https://github.com/user-attachments/assets/ee04ebaf-a204-4a70-8e23-b966b8053721)
+
+O Mapa final da sua VPC, deve estar assim ao final dessas etapas: 
+
+![Captura de tela 2025-03-18 094840](https://github.com/user-attachments/assets/db85728e-e7ed-4b63-95e9-df35e72c0681)
+
 
 ## ☁️ 4️⃣ Criar e Configurar Instância EC2
 1. **Criar Instância**
