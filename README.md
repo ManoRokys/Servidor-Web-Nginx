@@ -9,11 +9,12 @@ Este guia detalha a configuração de uma infraestrutura AWS, a instalação de 
 ### Via AWS Console:
 1. Acesse o AWS Management Console → VPC
 2. Clique em **Create VPC**
-3. Defina:
-   - **Nome:** MinhaVPC
-   - **IPv4 CIDR Block:** 10.0.0.0/16 (Exemplo, pode ajustar)
+3. Clique em VPC only
+4. Defina:
+   - **Nome:** VPCNginxServer
+   - **IPv4 CIDR:** 10.0.0.0/16 (Exemplo, pode ajustar)
    - **Tenancy:** Default
-4. Clique em **Create VPC**
+5. Clique em **Create VPC**
 
 ## 🌐 2️⃣ Criar Sub-redes Públicas e Privadas
 1. No menu lateral, clique em **Subnets** → **Create Subnet**
@@ -22,37 +23,60 @@ Este guia detalha a configuração de uma infraestrutura AWS, a instalação de 
    - **Sub-rede Pública 2:** CIDR 10.0.2.0/24, Zona us-east-1b
    - **Sub-rede Privada 1:** CIDR 10.0.3.0/24, Zona us-east-1a
    - **Sub-rede Privada 2:** CIDR 10.0.4.0/24, Zona us-east-1b
-3. Torne as **sub-redes públicas** ativando **Auto-assign Public IPv4**
+4. Torne as **sub-redes públicas** ativando **Auto-assign Public IPv4**
+   - Clique na sub-redes publicas
+   - Clique em **Actions**  → **Edit subnet settings**
 
 ## 🌍 3️⃣ Configurar Internet Gateway e Tabela de Rotas
 1. **Internet Gateway**
    - Vá para **Internet Gateways** → **Create Internet Gateway**
-   - Nomeie (ex: MeuIGW) → **Create** → **Attach to VPC**
+   - Nomeie (ex: IGWNginxServer) → **Create** → **Attach to VPC**
 2. **Tabela de Rotas**
    - Vá para **Route Tables** → **Create Route Table**
    - Associe à VPC e edite as **Routes**:
+     - Clique em **Add route**
      - **Destination:** 0.0.0.0/0
-     - **Target:** Internet Gateway (MeuIGW)
+     - **Target:** Internet Gateway (IGWNginxServer)
+     - **Save changes**
    - Associe as sub-redes públicas
 
 ## ☁️ 4️⃣ Criar e Configurar Instância EC2
 1. **Criar Instância**
    - AWS Console → **EC2** → **Launch Instance**
-   - Escolha uma AMI: Ubuntu 22.04, Debian 11 ou Amazon Linux
-   - **Tipo:** t2.micro (grátis no Free Tier)
-   - **Rede:** Escolha a VPC e uma sub-rede pública
+   - Escolha uma AMI: Ubuntu 24.04, Debian 11 ou Amazon Linux
+   - **Instance type:** t2.micro (grátis no Free Tier)
+   - **Network settings:** Escolha a VPC e uma sub-rede pública
    - **Habilite IP Público**
-2. **Criar Security Group** com regras:
+2. **Create Security Group** com regras:
    - **SSH (22):** Seu IP ou 0.0.0.0/0 (inseguro para produção)
    - **HTTP (80):** 0.0.0.0/0
-3. **Criar Chave SSH**
-   - Nome: minha-chave → **Download Key Pair**
-   - **Acesso via SSH**:
-     ```bash
-     ssh -i minha-chave.pem ubuntu@IP_PUBLICO
-     ```
+3. **Key pair (login)**
+   - **Create new key pair**
+   - Criar Chave SSH
+   - Nome: ChaveNginx
+   - Formato: .pem (For use with OpenSSH)  
+   - Clique em Create Key Pair e faça o download do arquivo .pem (caso não tenha feito automaticamente)
+4. **Launch instance**
 
-## ⚙️ 5️⃣ Instalar e Configurar Nginx
+## 🔑 5️⃣ Acesso via SSH e Configuração no WSL
+
+Se estiver utilizando **WSL (Windows Subsystem for Linux)**, siga os passos para mover a chave `.pem` e conectar-se à instância:
+
+1. **Mova a chave para o ambiente WSL:**
+   - No **WSL**, copie a chave para o diretório home do WSL:
+     ```bash
+     mv /mnt/c/Users/SeuUsuario/Downloads/ChaveNginx.pem ~/
+     ```
+   - No **WSL**, ajuste as permissões da chave:
+     ```bash
+     chmod 400 ~/ChaveNginx.pem
+     ```
+2. **Acesse a instância via SSH:**
+   ```bash
+   ssh -i ~/ChaveNginx.pem ubuntu@IP_PUBLICO
+   ```
+
+## ⚙️ 6️⃣ Instalar e Configurar Nginx
 ### Para Ubuntu/Debian:
 ```bash
 sudo apt update && sudo apt install nginx -y
@@ -67,9 +91,10 @@ Adicione:
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head><title>Meu Projeto</title></head>
-<body><h1>🚀 Servidor Nginx Online!</h1></body>
+<body><h1>Servidor Nginx Online!</h1></body>
 </html>
 ```
+(para salvar o arquivo no nano,  digite Ctrl + x, aperte y e aperte enter)
 Reinicie o Nginx:
 ```bash
 sudo systemctl restart nginx
@@ -78,8 +103,21 @@ Teste a configuração:
 ```bash
 curl -I http://localhost
 ```
+Para acessar o servidor via navegador, copie o **IP Público** da instância no AWS e cole na barra de endereços do seu navegador:
+```
+http://IP_PUBLICO
+```
 
-## 🛠️ 6️⃣ Criar Script de Monitoramento
+## 🔔 7️⃣ Configurar Webhook do Discord
+1. **Criar Webhook**:
+   - Vá até **Configurações do Servidor** → **Integrações** → **Webhooks**
+   - Clique em **Novo Webhook**, escolha um canal e copie a **URL**
+2. **Testar Webhook Manualmente**:
+```bash
+curl -X POST -H "Content-Type: application/json" -d '{"content": "🚀 Teste de Webhook!"}' "URL_DO_SEU_WEBHOOK"
+```
+
+## 🛠️ 8️⃣ Criar Script de Monitoramento
 Crie e edite o script:
 ```bash
 sudo nano /usr/local/bin/monitorar_site.py
@@ -95,10 +133,10 @@ LOG_FILE = "/var/log/monitoramento.log"
 logging.basicConfig(filename=LOG_FILE, level=logging.INFO, format="%(asctime)s - %(message)s")
 
 def verificar_site():
-    try:
         resposta = requests.get(URL, timeout=10)
         if resposta.status_code == 200:
             logging.info(f"✅ Site online: {URL}")
+            enviar_alerta(f"✅ O site {URL} está online!")   
         else:
             logging.warning(f"⚠️ Erro {resposta.status_code}: {URL}")
             enviar_alerta(f"⚠️ Alerta: Site {URL} retornou {resposta.status_code}!")
@@ -117,27 +155,47 @@ Torne o script executável:
 sudo chmod +x /usr/local/bin/monitorar_site.py
 ```
 
-## 🔄 7️⃣ Agendar Execução Automática
+## 🔄 9️⃣ Agendar Execução Automática
 Para rodar o script a cada **1 minuto**, edite o crontab:
 ```bash
 sudo crontab -e
 ```
-Adicione:
+Se for a primeira vez, o sistema perguntará qual editor deseja usar (nano, vim, etc.). Escolha um e então adicione a seguinte linha no final do arquivo:
 ```bash
 * * * * * /usr/local/bin/monitorar_site.py
 ```
 
-## 🔔 8️⃣ Configurar Webhook do Discord
-1. **Criar Webhook**:
-   - Vá até **Configurações do Servidor** → **Integrações** → **Webhooks**
-   - Clique em **Novo Webhook**, escolha um canal e copie a **URL**
-2. **Testar Webhook Manualmente**:
-```bash
-curl -X POST -H "Content-Type: application/json" -d '{"content": "🚀 Teste de Webhook!"}' "URL_DO_SEU_WEBHOOK"
-```
-Se a mensagem aparecer no Discord, está funcionando! ✅
 
-Agora, toda vez que o site cair ou apresentar erro, você receberá um alerta no seu canal do Discord! 🎯
+## ✅ 🔎 1️⃣0️⃣ Testes Finais
+
+1. **Verificar logs do monitoramento:**
+   ```bash
+   cat /var/log/monitoramento.log
+   ```
+2. **Testar envio de alertas ao Discord:**
+   ```bash
+   tail -f /var/log/monitoramento.log
+   ```
+3. **Simular indisponibilidade do servidor:**
+   ```bash
+   sudo systemctl stop nginx
+   ```
+   Depois, reinicie:
+   ```bash
+   sudo systemctl start nginx
+   ```
+Se os alertas estiverem aparecendo corretamente no Discord, a configuração está completa! 🎉
+
+
+
+
+
+
+
+
+
+
+
 
 
 
