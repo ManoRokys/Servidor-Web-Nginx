@@ -27,12 +27,24 @@ Este guia detalha a configuração de uma infraestrutura AWS, a instalação de 
 
 ## 🌐 2️⃣ Criar Sub-redes Públicas e Privadas
 1. No menu lateral, clique em **Subnets** → **Create Subnet**
+
+![Captura de tela 2025-03-18 110459](https://github.com/user-attachments/assets/24ba6ab6-8225-42d0-b5ec-fd7df4ed237f)
+
 2. Escolha a VPC criada e defina:
+
+![Captura de tela 2025-03-24 080312](https://github.com/user-attachments/assets/63ff62e1-0847-4600-9c7e-44e0710b5582)
+
    - **Sub-rede Pública 1:** CIDR 10.0.1.0/24, Zona us-east-1a
    - **Sub-rede Pública 2:** CIDR 10.0.2.0/24, Zona us-east-1b
+   
+   ![Captura de tela 2025-03-18 093246](https://github.com/user-attachments/assets/9dca65be-f6e8-41d1-a0eb-82854ffedb2f)
+
    - **Sub-rede Privada 1:** CIDR 10.0.3.0/24, Zona us-east-1a
    - **Sub-rede Privada 2:** CIDR 10.0.4.0/24, Zona us-east-1b
-4. Torne as **sub-redes públicas** ativando **Auto-assign Public IPv4**
+
+   ![Captura de tela 2025-03-18 093535](https://github.com/user-attachments/assets/e6c01fc2-db01-4140-9fed-cc03552cfd9c)
+
+3. Torne as **sub-redes públicas** ativando **Auto-assign Public IPv4**
    - Clique na sub-redes publicas
    - Clique em **Actions**  → **Edit subnet settings**
 
