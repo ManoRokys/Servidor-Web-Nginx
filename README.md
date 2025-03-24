@@ -43,7 +43,7 @@ Este guia detalha a configuração de uma infraestrutura AWS, a instalação de 
 ## ☁️ 4️⃣ Criar e Configurar Instância EC2
 1. **Criar Instância**
    - AWS Console → **EC2** → **Launch Instance**
-   - Escolha uma AMI: Ubuntu 24.04, Debian 11 ou Amazon Linux
+   - Escolha uma AMI: Ubuntu 24.04(versão usada nos exemplos), Debian 11 ou Amazon Linux
    - **Instance type:** t2.micro (grátis no Free Tier)
    - **Network settings:** Escolha a VPC e uma sub-rede pública
    - **Habilite IP Público**
