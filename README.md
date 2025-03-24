@@ -22,7 +22,7 @@ Este guia detalha a configuração de uma infraestrutura AWS, a instalação de 
    - **Tenancy:** Default
 5. Clique em **Create VPC**
 
-![documentacao2](https://github.com/user-attachments/assets/d7360663-1326-43ce-a2c3-698bf2ea6ffa)
+![Captura de tela 2025-03-18 092844](https://github.com/user-attachments/assets/04386eb4-34bf-4970-a74c-255bfc255ee4)
 
 
 ## 🌐 2️⃣ Criar Sub-redes Públicas e Privadas
