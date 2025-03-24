@@ -7,10 +7,10 @@ LOG_FILE = "/var/log/monitoramento.log"
 logging.basicConfig(filename=LOG_FILE, level=logging.INFO, format="%(asctime)s - %(message)s")
 
 def verificar_site():
-    try:
         resposta = requests.get(URL, timeout=10)
         if resposta.status_code == 200:
             logging.info(f"✅ Site online: {URL}")
+            enviar_alerta(f"✅ O site {URL} está online!")   
         else:
             logging.warning(f"⚠️ Erro {resposta.status_code}: {URL}")
             enviar_alerta(f"⚠️ Alerta: Site {URL} retornou {resposta.status_code}!")
