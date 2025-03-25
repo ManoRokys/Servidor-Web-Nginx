@@ -273,6 +273,199 @@ Se os alertas estiverem aparecendo corretamente no Discord, a configuração est
 
 
 
+🚀 Automação com User Data (EC2)
+O User Data permite que a instância EC2 execute comandos automaticamente ao ser iniciada. Vamos configurar para que ela instale o Nginx, copie os arquivos HTML e configure o script de monitoramento.
+
+📌 Criando a Instância com User Data
+No AWS Console, vá para EC2 → Launch Instance
+
+Escolha uma AMI como Ubuntu 24.04
+
+Selecione o tipo de instância (ex: t2.micro)
+
+Em Advanced Details, encontre a seção User Data
+
+![Captura de tela 2025-03-25 084435](https://github.com/user-attachments/assets/16ff3e94-5d73-4e8f-9751-115acac8b9b6)
+
+Cole o seguinte script:
+
+#!/bin/bash
+apt update -y
+apt install -y nginx
+
+# Configura o HTML da página inicial
+cat <<EOF > /var/www/html/index.html
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitoramento Ativo</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 50px; background-color: #f4f4f4; }
+        h1 { color: #333; }
+        p { color: #555; }
+    </style>
+</head>
+<body>
+    <h1>Servidor Online!</h1>
+</body>
+</html>
+EOF
+
+systemctl restart nginx
+
+cat <<EOF > /usr/local/bin/monitoramento.py
+#!/usr/bin/env python3
+import requests, logging
+
+URL = "http://SEU_SITE.com"
+DISCORD_WEBHOOK = "SUA_WEBHOOK_AQUI"
+LOG_FILE = "/var/log/monitoramento.log"
+
+logging.basicConfig(filename=LOG_FILE, level=logging.INFO, format="%(asctime)s - %(message)s")
+
+def verificar_site():
+    try:
+        resposta = requests.get(URL, timeout=10)
+        if resposta.status_code == 200:
+            logging.info(f"✅ Site online: {URL}")
+            enviar_alerta(f"✅ O site está online!")
+        else:
+            logging.warning(f"⚠️ Erro {resposta.status_code}: {URL}")
+            enviar_alerta(f"⚠️ Site retornou {resposta.status_code}!")
+    except requests.RequestException:
+        logging.error(f"❌ Site offline: {URL}")
+        enviar_alerta(f"🚨 Site está fora do ar!")
+
+def enviar_alerta(mensagem):
+    requests.post(DISCORD_WEBHOOK, json={"content": mensagem})
+
+if __name__ == "__main__":
+    verificar_site()
+EOF
+
+chmod +x /usr/local/bin/monitoramento.py
+
+echo "* * * * * /usr/bin/python3 /usr/local/bin/monitoramento.py" | crontab -
+
+systemctl restart nginx
+
+![Captura de tela 2025-03-25 084542](https://github.com/user-attachments/assets/31e95a66-040a-4102-a451-81935ff12bbe)
+
+Clique em Launch Instance e aguarde a inicialização.
+
+Acesse via navegador: http://SEU_IP_PUBLICO
+
+Se tudo correu bem, a página "🚀 Servidor Online!" será exibida.
+
+🌍 Infraestrutura Automatizada com CloudFormation
+Agora, vamos criar um arquivo YAML para provisionar toda a infraestrutura automaticamente, incluindo:
+
+✅ VPC
+✅ Sub-redes
+✅ Security Groups
+✅ EC2 com User Data
+
+📌 Criando o Template CloudFormation
+Crie um arquivo chamado infraestrutura.yaml e adicione:
+
+yaml
+Copiar código
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Infraestrutura automatizada com EC2, VPC e Nginx
+
+Resources:
+  MinhaVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+        - Key: Name
+          Value: MinhaVPC
+
+  MinhaSubRede:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref MinhaVPC
+      CidrBlock: 10.0.1.0/24
+      MapPublicIpOnLaunch: true
+      AvailabilityZone: us-east-1a
+      Tags:
+        - Key: Name
+          Value: MinhaSubRede
+
+  MeuSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Permitir acesso HTTP e SSH
+      VpcId: !Ref MinhaVPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: MeuSecurityGroup
+
+  MinhaInstanciaEC2:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: ami-0c55b159cbfafe1f0  # Substituir pela AMI de sua região
+      InstanceType: t2.micro
+      KeyName: minha-chave
+      SubnetId: !Ref MinhaSubRede
+      SecurityGroupIds:
+        - !Ref MeuSecurityGroup
+      Tags:
+        - Key: Name
+          Value: ServidorNginx
+      UserData:
+        Fn::Base64: |
+          #!/bin/bash
+          apt update -y
+          apt install -y nginx python3-pip
+          
+          cat <<EOF > /var/www/html/index.html
+          <!DOCTYPE html>
+          <html lang="pt">
+          <head>
+              <title>Servidor Automatizado 🚀</title>
+          </head>
+          <body>
+              <h1>🚀 Servidor Online!</h1>
+          </body>
+          </html>
+          EOF
+
+          systemctl restart nginx
+
+Outputs:
+  PublicIP:
+    Description: IP público da instância EC2
+    Value: !GetAtt MinhaInstanciaEC2.PublicIp
+📌 Como Implantar o CloudFormation
+Acesse o AWS CloudFormation
+
+Clique em Create Stack → With new resources
+
+Escolha Upload a template file e envie o arquivo infraestrutura.yaml
+
+Clique em Next, nomeie como MinhaInfraestrutura e continue
+
+Aguarde a criação dos recursos ✅
+
+Após a criação, acesse a instância no navegador usando o IP mostrado na aba Outputs do CloudFormation.
+
+
+
 
 
 
