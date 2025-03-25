@@ -273,25 +273,37 @@ Se os alertas estiverem aparecendo corretamente no Discord, a configuração est
 
 
 
-🚀 Automação com User Data (EC2)
-O User Data permite que a instância EC2 execute comandos automaticamente ao ser iniciada. Vamos configurar para que ela instale o Nginx, copie os arquivos HTML e configure o script de monitoramento.
+# 🚀 Infraestrutura Automatizada na AWS
 
-📌 Criando a Instância com User Data
-No AWS Console, vá para EC2 → Launch Instance
+Este repositório também fornece um guia completo para automatizar a criação de uma infraestrutura AWS usando **User Data** e **CloudFormation**. Ele provisiona automaticamente uma instância EC2 com **Nginx**, um **HTML personalizado** e um **script de monitoramento** que envia alertas para o Discord via Webhook.
 
-Escolha uma AMI como Ubuntu 24.04
+## 📌 Requisitos
 
-Selecione o tipo de instância (ex: t2.micro)
+- Conta AWS com permissão para criar recursos EC2, VPC e Security Groups
+- Chave SSH criada no AWS
+- Webhook do Discord para monitoramento
 
-Em Advanced Details, encontre a seção User Data
+---
 
-![Captura de tela 2025-03-25 084435](https://github.com/user-attachments/assets/16ff3e94-5d73-4e8f-9751-115acac8b9b6)
+## ⚙️ Configuração Automática via User Data
 
-Cole o seguinte script:
+O script abaixo deve ser adicionado no campo **User Data** ao criar a instância EC2. Ele:
 
+✅ Instala o **Nginx**
+✅ Configura um **HTML de boas-vindas**
+✅ Reinicia o **Nginx** automaticamente
+✅ Baixa e configura um **script de monitoramento**
+✅ Cria um **serviço systemd** para manter o Nginx sempre ativo
+
+![Captura de tela 2025-03-25 084435](https://github.com/user-attachments/assets/d14c4187-1e66-4336-ac7c-37396b931b58)
+
+![Captura de tela 2025-03-25 084542](https://github.com/user-attachments/assets/0db41170-f60d-44d8-8067-77be5125162e)
+
+```bash
 #!/bin/bash
+# Atualiza pacotes e instala Nginx
 apt update -y
-apt install -y nginx
+apt install -y nginx python3-pip
 
 # Configura o HTML da página inicial
 cat <<EOF > /var/www/html/index.html
@@ -313,16 +325,35 @@ cat <<EOF > /var/www/html/index.html
 </html>
 EOF
 
+# Reinicia o Nginx
 systemctl restart nginx
 
-cat <<EOF > /usr/local/bin/monitoramento.py
+# Cria um serviço systemd para reiniciar Nginx automaticamente
+cat <<EOF > /etc/systemd/system/nginx-monitor.service
+[Unit]
+Description=Monitoramento do Nginx
+After=network.target
+
+[Service]
+ExecStart=/bin/bash -c 'while true; do systemctl is-active --quiet nginx || systemctl restart nginx; sleep 60; done'
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+systemctl daemon-reload
+systemctl enable nginx-monitor
+systemctl start nginx-monitor
+
+# Baixa e configura o script de monitoramento
+cat <<EOF > /usr/local/bin/monitorar_site.py
 #!/usr/bin/env python3
 import requests, logging
 
-URL = "http://SEU_SITE.com"
-DISCORD_WEBHOOK = "SUA_WEBHOOK_AQUI"
+URL = "http://localhost"
+DISCORD_WEBHOOK = "SEU_WEBHOOK_AQUI"
 LOG_FILE = "/var/log/monitoramento.log"
-
 logging.basicConfig(filename=LOG_FILE, level=logging.INFO, format="%(asctime)s - %(message)s")
 
 def verificar_site():
@@ -330,13 +361,13 @@ def verificar_site():
         resposta = requests.get(URL, timeout=10)
         if resposta.status_code == 200:
             logging.info(f"✅ Site online: {URL}")
-            enviar_alerta(f"✅ O site está online!")
+            enviar_alerta(f"✅ O site {URL} está online!")
         else:
             logging.warning(f"⚠️ Erro {resposta.status_code}: {URL}")
-            enviar_alerta(f"⚠️ Site retornou {resposta.status_code}!")
+            enviar_alerta(f"⚠️ Alerta: Site {URL} retornou {resposta.status_code}!")
     except requests.RequestException:
         logging.error(f"❌ Site offline: {URL}")
-        enviar_alerta(f"🚨 Site está fora do ar!")
+        enviar_alerta(f"🚨 Alerta: Site {URL} está fora do ar!")
 
 def enviar_alerta(mensagem):
     requests.post(DISCORD_WEBHOOK, json={"content": mensagem})
@@ -345,21 +376,15 @@ if __name__ == "__main__":
     verificar_site()
 EOF
 
-chmod +x /usr/local/bin/monitoramento.py
+chmod +x /usr/local/bin/monitorar_site.py
 
-echo "* * * * * /usr/bin/python3 /usr/local/bin/monitoramento.py" | crontab -
+# Adiciona o monitoramento ao crontab para rodar a cada 1 minuto
+(crontab -l 2>/dev/null; echo "* * * * * /usr/local/bin/monitorar_site.py") | crontab -
+```
 
-systemctl restart nginx
+---
 
-![Captura de tela 2025-03-25 084542](https://github.com/user-attachments/assets/31e95a66-040a-4102-a451-81935ff12bbe)
-
-Clique em Launch Instance e aguarde a inicialização.
-
-Acesse via navegador: http://SEU_IP_PUBLICO
-
-Se tudo correu bem, a página "🚀 Servidor Online!" será exibida.
-
-🌍 Infraestrutura Automatizada com CloudFormation
+## 🌍 Infraestrutura Automatizada com CloudFormation
 Agora, vamos criar um arquivo YAML para provisionar toda a infraestrutura automaticamente, incluindo:
 
 ✅ VPC
@@ -370,8 +395,7 @@ Agora, vamos criar um arquivo YAML para provisionar toda a infraestrutura automa
 📌 Criando o Template CloudFormation
 Crie um arquivo chamado infraestrutura.yaml e adicione:
 
-yaml
-Copiar código
+```yaml
 AWSTemplateFormatVersion: '2010-09-09'
 Description: Infraestrutura automatizada com EC2, VPC e Nginx
 
@@ -431,16 +455,16 @@ Resources:
         Fn::Base64: |
           #!/bin/bash
           apt update -y
-          apt install -y nginx python3-pip
+          apt install -y nginx
           
           cat <<EOF > /var/www/html/index.html
           <!DOCTYPE html>
           <html lang="pt">
           <head>
-              <title>Servidor Automatizado 🚀</title>
+              <title>Servidor Automatizado</title>
           </head>
           <body>
-              <h1>🚀 Servidor Online!</h1>
+              <h1>Servidor Online!</h1>
           </body>
           </html>
           EOF
@@ -451,7 +475,9 @@ Outputs:
   PublicIP:
     Description: IP público da instância EC2
     Value: !GetAtt MinhaInstanciaEC2.PublicIp
-📌 Como Implantar o CloudFormation
+
+```
+## 📌 Como Implantar o CloudFormation
 Acesse o AWS CloudFormation
 
 Clique em Create Stack → With new resources
@@ -463,6 +489,30 @@ Clique em Next, nomeie como MinhaInfraestrutura e continue
 Aguarde a criação dos recursos ✅
 
 Após a criação, acesse a instância no navegador usando o IP mostrado na aba Outputs do CloudFormation.
+---
+
+## ✅ Testes Finais
+
+### 🔎 Testar se o servidor Nginx está rodando:
+```bash
+systemctl status nginx
+```
+
+### 📡 Testar monitoramento:
+```bash
+cat /var/log/monitoramento.log
+```
+
+### ⛔ Simular queda do servidor para testar alerta:
+```bash
+sudo systemctl stop nginx
+```
+Depois, verifique se o alerta chegou ao **Discord**!
+
+---
+
+
+
 
 
 
