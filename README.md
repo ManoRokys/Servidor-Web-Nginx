@@ -397,7 +397,7 @@ Crie um arquivo chamado infraestrutura.yaml e adicione:
 
 ```yaml
 AWSTemplateFormatVersion: '2010-09-09'
-Description: Infraestrutura automatizada com EC2, VPC e Nginx
+Description: Infraestrutura automatizada com EC2, VPC, Nginx e Monitoramento
 
 Resources:
   MinhaVPC:
@@ -442,7 +442,7 @@ Resources:
   MinhaInstanciaEC2:
     Type: AWS::EC2::Instance
     Properties:
-      ImageId: ami-0c55b159cbfafe1f0  # Substituir pela AMI de sua região
+      ImageId: ami-0c55b159cbfafe1f0  # Substituir pela AMI da sua região
       InstanceType: t2.micro
       KeyName: minha-chave
       SubnetId: !Ref MinhaSubRede
@@ -454,90 +454,81 @@ Resources:
       UserData:
         Fn::Base64: |
           #!/bin/bash
-          # Atualiza pacotes e instala Nginx
           apt update -y
           apt install -y nginx python3-pip
 
-          # Configura o HTML da página inicial
+          # Criar página HTML personalizada
           cat <<EOF > /var/www/html/index.html
           <!DOCTYPE html>
           <html lang="pt">
           <head>
-             <meta charset="UTF-8">
-             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-             <title>Monitoramento Ativo</title>
-          <style>
-              body { font-family: Arial, sans-serif; text-align: center; padding: 50px; background-color: #f4f4f4; }
-              h1 { color: #333; }
-              p { color: #555; }
-          </style>
+              <title>Servidor Automatizado 🚀</title>
           </head>
           <body>
-             <h1>Servidor Online!</h1>
+              <h1>🚀 Servidor Online!</h1>
           </body>
           </html>
           EOF
 
-          # Reinicia o Nginx
           systemctl restart nginx
 
-          # Cria um serviço systemd para reiniciar Nginx automaticamente
-          cat <<EOF > /etc/systemd/system/nginx-monitor.service
+          # Configuração do script de monitoramento
+          cat <<EOF > /usr/local/bin/monitorar_site.py
+          #!/usr/bin/env python3
+          import requests, logging
+
+          URL = "http://127.0.0.1"
+          DISCORD_WEBHOOK = "https://discord.com/api/webhooks/SEU_WEBHOOK_AQUI"
+          LOG_FILE = "/var/log/monitoramento.log"
+          logging.basicConfig(filename=LOG_FILE, level=logging.INFO, format="%(asctime)s - %(message)s")
+
+          def verificar_site():
+              try:
+                  resposta = requests.get(URL, timeout=10)
+                  if resposta.status_code == 200:
+                      logging.info(f"✅ Site online: {URL}")
+                      enviar_alerta(f"✅ O site {URL} está online!")
+                  else:
+                      logging.warning(f"⚠️ Erro {resposta.status_code}: {URL}")
+                      enviar_alerta(f"⚠️ Alerta: Site {URL} retornou {resposta.status_code}!")
+              except requests.RequestException:
+                  logging.error(f"❌ Site offline: {URL}")
+                  enviar_alerta(f"🚨 Alerta: Site {URL} está fora do ar!")
+
+          def enviar_alerta(mensagem):
+              requests.post(DISCORD_WEBHOOK, json={"content": mensagem})
+
+          if __name__ == "__main__":
+              verificar_site()
+          EOF
+
+          chmod +x /usr/local/bin/monitorar_site.py
+
+          # Criar serviço systemd para execução automática
+          cat <<EOF > /etc/systemd/system/monitoramento.service
           [Unit]
-          Description=Monitoramento do Nginx
+          Description=Monitoramento do servidor
           After=network.target
 
           [Service]
-          ExecStart=/bin/bash -c 'while true; do systemctl is-active --quiet nginx || systemctl restart nginx; sleep 60; done'
+          ExecStart=/usr/bin/python3 /usr/local/bin/monitorar_site.py
           Restart=always
+          User=root
 
           [Install]
           WantedBy=multi-user.target
           EOF
 
-          systemctl daemon-reload
-          systemctl enable nginx-monitor
-          systemctl start nginx-monitor
+          systemctl enable monitoramento.service
+          systemctl start monitoramento.service
 
-         # Baixa e configura o script de monitoramento
-         cat <<EOF > /usr/local/bin/monitorar_site.py
-         #!/usr/bin/env python3
-         import requests, logging
+          # Configurar cron para rodar a cada minuto
+          echo "* * * * * root /usr/bin/python3 /usr/local/bin/monitorar_site.py" >> /etc/crontab
 
-         URL = "http://localhost"
-         DISCORD_WEBHOOK = "SEU_WEBHOOK_AQUI"
-         LOG_FILE = "/var/log/monitoramento.log"
-         logging.basicConfig(filename=LOG_FILE, level=logging.INFO, format="%(asctime)s - %(message)s")
-
-         def verificar_site():
-             try:
-                 resposta = requests.get(URL, timeout=10)
-                 if resposta.status_code == 200:
-                     logging.info(f"✅ Site online: {URL}")
-                     enviar_alerta(f"✅ O site {URL} está online!")
-                 else:
-                     logging.warning(f"⚠️ Erro {resposta.status_code}: {URL}")
-                     enviar_alerta(f"⚠️ Alerta: Site {URL} retornou {resposta.status_code}!")
-            except requests.RequestException:
-                 logging.error(f"❌ Site offline: {URL}")
-                 enviar_alerta(f"🚨 Alerta: Site {URL} está fora do ar!")
-
-        def enviar_alerta(mensagem):
-           requests.post(DISCORD_WEBHOOK, json={"content": mensagem})
-
-        if __name__ == "__main__":
-             verificar_site()
-        EOF
-
-        chmod +x /usr/local/bin/monitorar_site.py
-
-        #  Adiciona o monitoramento ao crontab para rodar a cada 1 minuto
-       (crontab -l 2>/dev/null; echo "* * * * * /usr/local/bin/monitorar_site.py") | crontab -
-
-     Outputs:
-     PublicIP:
-         Description: IP público da instância EC2
-         Value: !GetAtt MinhaInstanciaEC2.PublicIp
+Outputs:
+  PublicIP:
+    Description: IP público da instância EC2
+    Value: !GetAtt MinhaInstanciaEC2.PublicIp
 
 ```
 ## 📌 Como Implantar o CloudFormation
