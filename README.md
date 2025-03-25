@@ -393,6 +393,7 @@ Agora, vamos criar um arquivo YAML para provisionar toda a infraestrutura automa
 ✅ EC2 com User Data
 
 📌 Criando o Template CloudFormation
+Crie uma key pair com o nome: minha-chave (como informado no exemplo)
 Crie um arquivo chamado infraestrutura.yaml e adicione:
 
 ```yaml
