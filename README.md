@@ -5,6 +5,21 @@ Este projeto consiste em um script automatizado para monitorar a disponibilidade
 
 Este guia detalha a configuração de uma infraestrutura AWS, a instalação de um servidor Nginx e a implementação de um sistema de monitoramento automatizado com alertas via Discord Webhook.
 
+📖 Sumário
+1️⃣ Criar a VPC
+2️⃣ Criar Sub-redes Públicas e Privadas
+3️⃣ Configurar Internet Gateway e Tabela de Rotas
+4️⃣ Criar e Configurar Instância EC2
+5️⃣ Acesso via SSH e Configuração no WSL
+6️⃣ Instalar e Configurar Nginx
+7️⃣ Configurar Webhook do Discord
+8️⃣ Criar Script de Monitoramento
+9️⃣ Agendar Execução Automática
+🔟 Testes Finais
+🚀 Infraestrutura Automatizada na AWS
+📌 Requisitos
+⚙️ Configuração Automática via User Data
+
 ## 📌 1️⃣ Criar a VPC
 ### Via AWS Console:
 1. Acesse o AWS Management Console → VPC
@@ -463,10 +478,10 @@ Resources:
           <!DOCTYPE html>
           <html lang="pt">
           <head>
-              <title>Servidor Automatizado 🚀</title>
+              <title>Servidor Automatizado</title>
           </head>
           <body>
-              <h1>🚀 Servidor Online!</h1>
+              <h1>Servidor Online!</h1>
           </body>
           </html>
           EOF
@@ -538,35 +553,6 @@ Acesse o AWS CloudFormation
 Clique em Create Stack → With new resources
 
 Escolha Upload a template file e envie o arquivo infraestrutura.yaml
-
-Clique em Next, nomeie como MinhaInfraestrutura e continue
-
-Aguarde a criação dos recursos ✅
-
-Após a criação, acesse a instância no navegador usando o IP mostrado na aba Outputs do CloudFormation.
----
-
-## ✅ Testes Finais
-
-### 🔎 Testar se o servidor Nginx está rodando:
-```bash
-systemctl status nginx
-```
-
-### 📡 Testar monitoramento:
-```bash
-cat /var/log/monitoramento.log
-```
-
-### ⛔ Simular queda do servidor para testar alerta:
-```bash
-sudo systemctl stop nginx
-```
-Depois, verifique se o alerta chegou ao **Discord**!
-
----
-
-
 
 
 
