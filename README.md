@@ -5,20 +5,21 @@ Este projeto consiste em um script automatizado para monitorar a disponibilidade
 
 Este guia detalha a configuração de uma infraestrutura AWS, a instalação de um servidor Nginx e a implementação de um sistema de monitoramento automatizado com alertas via Discord Webhook.
 
-📖 Sumário
-1️⃣ Criar a VPC
-2️⃣ Criar Sub-redes Públicas e Privadas
-3️⃣ Configurar Internet Gateway e Tabela de Rotas
-4️⃣ Criar e Configurar Instância EC2
-5️⃣ Acesso via SSH e Configuração no WSL
-6️⃣ Instalar e Configurar Nginx
-7️⃣ Configurar Webhook do Discord
-8️⃣ Criar Script de Monitoramento
-9️⃣ Agendar Execução Automática
-🔟 Testes Finais
-🚀 Infraestrutura Automatizada na AWS
-📌 Requisitos
-⚙️ Configuração Automática via User Data
+## 📖 Sumário
+1. [Introdução](#servidor-web-nginx)  
+2. [Criar a VPC](#1️⃣-criar-a-vpc)  
+3. [Criar Sub-redes Públicas e Privadas](#2️⃣-criar-sub-redes-públicas-e-privadas)  
+4. [Configurar Internet Gateway e Tabela de Rotas](#3️⃣-configurar-internet-gateway-e-tabela-de-rotas)  
+5. [Criar e Configurar Instância EC2](#4️⃣-criar-e-configurar-instância-ec2)  
+6. [Acesso via SSH e Configuração no WSL](#5️⃣-acesso-via-ssh-e-configuração-no-wsl)  
+7. [Instalar e Configurar Nginx](#6️⃣-instalar-e-configurar-nginx)  
+8. [Configurar Webhook do Discord](#7️⃣-configurar-webhook-do-discord)  
+9. [Criar Script de Monitoramento](#8️⃣-criar-script-de-monitoramento)  
+10. [Agendar Execução Automática](#9️⃣-agendar-execução-automática)  
+11. [Testes Finais](#1️⃣0️⃣-testes-finais)  
+12. [Infraestrutura Automatizada na AWS](#🚀-infraestrutura-automatizada-na-aws)  
+13. [Configuração Automática via User Data](#⚙️-configuração-automática-via-user-data)  
+
 
 ## 📌 1️⃣ Criar a VPC
 ### Via AWS Console:
