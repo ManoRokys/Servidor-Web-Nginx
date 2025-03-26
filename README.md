@@ -8,17 +8,17 @@ Este guia detalha a configuração de uma infraestrutura AWS, a instalação de 
 ## 📖 Sumário
 1. [Introdução](#servidor-web-nginx)  
 2. [Criar a VPC](#-1%EF%B8%8F⃣-criar-a-vpc)  
-3. [Criar Sub-redes Públicas e Privadas](#criar-sub-redes-públicas-e-privadas)  
-4. [Configurar Internet Gateway e Tabela de Rotas](#3️⃣-configurar-internet-gateway-e-tabela-de-rotas)  
-5. [Criar e Configurar Instância EC2](#4️⃣-criar-e-configurar-instância-ec2)  
-6. [Acesso via SSH e Configuração no WSL](#5️⃣-acesso-via-ssh-e-configuração-no-wsl)  
-7. [Instalar e Configurar Nginx](#6️⃣-instalar-e-configurar-nginx)  
-8. [Configurar Webhook do Discord](#7️⃣-configurar-webhook-do-discord)  
-9. [Criar Script de Monitoramento](#8️⃣-criar-script-de-monitoramento)  
-10. [Agendar Execução Automática](#9️⃣-agendar-execução-automática)  
-11. [Testes Finais](#1️⃣0️⃣-testes-finais)  
-12. [Infraestrutura Automatizada na AWS](#🚀-infraestrutura-automatizada-na-aws)  
-13. [Configuração Automática via User Data](#⚙️-configuração-automática-via-user-data)  
+3. [Criar Sub-redes Públicas e Privadas](#-2%EF%B8%8F⃣-criar-sub-redes-públicas-e-privadas)  
+4. [Configurar Internet Gateway e Tabela de Rotas](#-3%EF%B8%8F⃣-configurar-internet-gateway-e-tabela-de-rotas)  
+5. [Criar e Configurar Instância EC2](#%EF%B8%8F-4%EF%B8%8F⃣-criar-e-configurar-instância-ec2)  
+6. [Acesso via SSH e Configuração no WSL](#-5%EF%B8%8F⃣-acesso-via-ssh-e-configuração-no-wsl)  
+7. [Instalar e Configurar Nginx](#%EF%B8%8F-6%EF%B8%8F⃣-instalar-e-configurar-nginx)  
+8. [Configurar Webhook do Discord](#-7%EF%B8%8F⃣-configurar-webhook-do-discord)  
+9. [Criar Script de Monitoramento](#%EF%B8%8F-8%EF%B8%8F⃣-criar-script-de-monitoramento)  
+10. [Agendar Execução Automática](#-9%EF%B8%8F⃣-agendar-execução-automática)  
+11. [Testes Finais](#--1%EF%B8%8F⃣0%EF%B8%8F⃣-testes-finais)  
+12. [Infraestrutura Automatizada na AWS](#-infraestrutura-automatizada-na-aws)  
+13. [Configuração Automática via User Data](#%EF%B8%8F-configuração-automática-via-user-data)  
 
 
 ## 📌 1️⃣ Criar a VPC
