@@ -7,8 +7,8 @@ Este guia detalha a configuração de uma infraestrutura AWS, a instalação de 
 
 ## 📖 Sumário
 1. [Introdução](#servidor-web-nginx)  
-2. [Criar a VPC](##Criar-a-VPC)  
-3. [Criar Sub-redes Públicas e Privadas](#2️⃣-criar-sub-redes-públicas-e-privadas)  
+2. [Criar a VPC](#criar-a-VPC)  
+3. [Criar Sub-redes Públicas e Privadas](#criar-sub-redes-públicas-e-privadas)  
 4. [Configurar Internet Gateway e Tabela de Rotas](#3️⃣-configurar-internet-gateway-e-tabela-de-rotas)  
 5. [Criar e Configurar Instância EC2](#4️⃣-criar-e-configurar-instância-ec2)  
 6. [Acesso via SSH e Configuração no WSL](#5️⃣-acesso-via-ssh-e-configuração-no-wsl)  
